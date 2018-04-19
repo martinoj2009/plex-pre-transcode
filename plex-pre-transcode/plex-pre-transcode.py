@@ -21,27 +21,31 @@ def main():
     args = parser.parse_args()
 
     # Make sure we have ffmpeg
-    if subprocess.getstatusoutput('which ffmpeg')[0]:
+    converter_location = subprocess.run(['which', 'ffmpeg'], stdout=subprocess.PIPE).\
+        stdout.decode('ascii').replace('\n', '')
+
+    if "ffmpeg" not in converter_location:
         stderr.write("You need to install ffmpeg\n")
         exit(-155)
 
     # Get files recursively
     allFiles = getFiles(args.folder, args.extension)
 
+
     # Lets start converting files
     for line in allFiles:
-        convertFile(line)
+        convertFile(line, converter_location)
 
 
-def getFiles(rootDire, extension):
+def getFiles(rootdir, extension):
     """
     Get all files recursively.
-    :param rootDire: Folder to start at
+    :param rootdir: Folder to start at
     :param extension: The extension you're looking for
     :return: List of strings
     """
     allFiles = []
-    for root, directories, filenames in walk(rootDire):
+    for root, directories, filenames in walk(rootdir):
         for filename in filenames:
             if filename.endswith(extension):
                 allFiles.append(path.join(root, filename))
@@ -49,17 +53,20 @@ def getFiles(rootDire, extension):
     return allFiles
 
 
-def convertFile(filePath, verbose=False):
+def convertFile(filepath, convertExecutable,verbose=False):
     """
     Convert a file to a supported video format
-    :param filePath: Full path to the file
+    :param filepath: Full path to the file
     :param verbose: If True then print stdout
     :return: Boolean
     """
     result = True
-    if filePath is not None:
+    if filepath is not None:
+        print('Converting: ' + filepath)
         try:
-            process = subprocess.Popen("ls", shell=True)
+            process = subprocess.Popen(convertExecutable + " -loglevel panic -y -i " + filepath +
+                                       " -metadata title="" -c:v copy -ac 2 -movflags +faststart "
+                                       + filepath[:-3] + "mp4", shell=True)
             process.wait()
 
             # Check if they want verbose
