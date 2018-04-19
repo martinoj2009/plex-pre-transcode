@@ -13,7 +13,7 @@ from os import path
 setup(
     name='plex-pre-transcode',
     packages=['plex-pre-transcode'],
-    version='0.1.6',
+    version='0.1.7',
     python_requires='>=3',
     description='Pre transcode Plex videos.',
     author='Martino Jones',
