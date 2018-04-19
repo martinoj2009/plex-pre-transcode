@@ -2,7 +2,7 @@ language: python
 python:
   - "3.6"
 script:
-  - "./test_main.py"
+  - "python test_main.py"
 provider: pypi
 user: "martinoj2009"
 password:
