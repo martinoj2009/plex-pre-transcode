@@ -1,5 +1,9 @@
 deploy:
   language: python
+  python:
+    - "3.6"
+  script:
+    - pytest
   provider: pypi
   user: "martinoj2009"
   password:
