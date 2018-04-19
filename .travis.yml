@@ -1,4 +1,5 @@
 deploy:
+  language: python
   provider: pypi
   user: "martinoj2009"
   password:
